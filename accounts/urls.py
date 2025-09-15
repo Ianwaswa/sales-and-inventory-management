@@ -24,7 +24,7 @@ from .views import (
 
 urlpatterns = [
     # User authentication URLs
-    path('register/', user_views.register, name='user-register'),
+    path('register/', user_views.register_redirect, name='user-register'),
     path('login/', auth_views.LoginView.as_view(
         template_name='accounts/login.html'), name='user-login'),
     path('profile/', user_views.profile, name='user-profile'),

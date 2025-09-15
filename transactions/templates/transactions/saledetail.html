@@ -1,6 +1,20 @@
 {% extends "store/base.html" %} {% load static %}{% block title %}Transaction detail{% endblock %}
 {% block content %}
 <style>
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt, #receipt * {
+    visibility: visible;
+  }
+  #receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%; /* makes sure it uses full width */
+  }
+}
 	section .receipt {
 		margin: 0;
 		font-size: 12px;
@@ -309,18 +323,18 @@
 </style>
 <div>
 <div class="text-center py-3">
-	<a href="#" class="btn btn-outline-success btn-sm">
-		<i class="fa fa-print"></i> Print
+    <a href="#" class="btn btn-outline-success btn-sm" onclick="window.print(); return false;">
+    	<i class="fa fa-print"></i> Print
 	</a>
 </div>
-<section class="receipt container-ticket">
+<section id="receipt" class="receipt container-ticket">
     <div class="ticket">
         <div class="head-ticket">
-            <p class="x-bold">InventoryMS</p>
-            <p class="bold">Tom Mboya Street, Tudor</p>
-            <p class="bold">Tel: +2547 00 000000</p>
+            <p class="x-bold">Heruwa Electronics</p>
+            <p class="bold">Mayanja, Bungoma</p>
+            <p class="bold">Tel: +254705182397</p>
             <br>
-            <p class="bold">P.O BOX. 90420-80100 MSA</p>
+            <p class="bold">P.O BOX. 420-50200 BGM</p>
             <p>Date: {{ sale.date_added|date:"Y/m/d H:i:s" }}</p>
             <p>Receipt code: IMS{{ sale.id }}</p>
             <div class="code-barre">
@@ -377,8 +391,36 @@
             </div>
         </div>
         <div class="body-ticket">
+
+            <!-- Added: Items bought list -->
             <div class="produits">
+                <p class="title-carte">Items Bought</p>
                 <div class="hr-sm"></div>
+                <table style="width:100%; font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Item</th>
+                            <th style="text-align:center;">Qty</th>
+                            <th style="text-align:right;">Price</th>
+                            <th style="text-align:right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in sale.saledetail_set.all %}
+                        <tr>
+                            <td>{{ detail.item.name }}</td>
+                            <td style="text-align:center;">{{ detail.quantity }}</td>
+                            <td style="text-align:right;">{{ detail.price }}</td>
+                            <td style="text-align:right;">{{ detail.total_detail }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="hr-sm"></div>
+
+            <div class="produits">
                 <div class="col2">
                     <p>Sub Total</p>
                     <p class="prix"><b>Ksh {{ sale.sub_total }}</b></p>
@@ -397,7 +439,8 @@
                     <p class="prix"><b>Ksh {{ sale.amount_paid }}</b></p>
                 </div>
                 <div class="col2">
-                    <p>Balance</p>
+                    <!-- Changed Balance -> Change -->
+                    <p>Change</p>
                     <p class="prix"><b>Ksh {{ sale.amount_change }}</b></p>
                 </div>
             </div>
@@ -411,7 +454,19 @@
             <p class="title-footer">THANK YOU</p>
         </div>
     </div>
-</section>
+</section>                                                                                                                    
 
 </div>
+<!-- <script>
+function printReceipt() {
+    var printContents = document.getElementById('receipt').innerHTML;
+    var originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+    location.reload(); // restore the page after printing
+}
+</script> -->
+
 {% endblock %}

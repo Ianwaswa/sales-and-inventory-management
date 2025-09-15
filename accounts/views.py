@@ -31,23 +31,29 @@ from .forms import (
 from .tables import ProfileTable
 
 
-def register(request):
-    """
-    Handle user registration.
-    If the request is POST, process the form data to create a new user.
-    Redirect to the login page on successful registration.
-    For GET requests, render the registration form.
-    """
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('user-login')
-    else:
-        form = CreateUserForm()
+# def register(request):
+#     """
+#     Handle user registration.
+#     If the request is POST, process the form data to create a new user.
+#     Redirect to the login page on successful registration.
+#     For GET requests, render the registration form.
+#     """
+#     if request.method == 'POST':
+#         form = CreateUserForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('user-login')
+#     else:
+#         form = CreateUserForm()
 
-    return render(request, 'accounts/register.html', {'form': form})
+#     return render(request, 'accounts/register.html', {'form': form})
 
+# 🔒 Redirect register attempts to login
+def register_redirect(request):
+    """
+    Disable self-registration. Redirect all requests to login.
+    """
+    return redirect('user-login')
 
 @login_required
 def profile(request):
